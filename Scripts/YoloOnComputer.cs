@@ -225,6 +225,7 @@ namespace OpenCVForUnityExample
                         vocOffset = 0;
                         break;
                 }
+                Debug.Log(menuVariables.GetLanguage() + vocOffset.ToString());
             }
 
 
@@ -392,6 +393,7 @@ namespace OpenCVForUnityExample
         /// </summary>
         public void OnBackButtonClick()
         {
+            Destroy(menuVariables);
             SceneManager.LoadScene("StartView");
         }
 
@@ -532,20 +534,21 @@ namespace OpenCVForUnityExample
 
             MatOfInt indices = new MatOfInt();
             Dnn.NMSBoxes(boxes, confidences, confThreshold, nmsThreshold, indices);
-            //Debug.Log("indices.dump () " + indices.dump());
-            //Debug.Log("indices.ToString () " + indices.ToString());
 
-            //Case where th user want to use the automatic mode
-            //for (int i = 0; (i < indices.total()) && (teachlist.count < level * 5); ++i)
+            //Draw the bouding box only if its index is contained in the teaching list
+            //for (int i = 0; i < indices.total(); ++i)
             //{
-            //    int idt =  (int)indices.get(i, 0)[0];
-            //    if (!teachlist.contains(offsetlanguage * numofword + classidslist[idt]))
+            //    int idx = (int)indices.get(i, 0)[0];
+
+            //    if (teachList.Contains(classIdsList[idx]))
             //    {
-            //        teachlist.add(offsetlanguage * numofword + classidslist[idt]);
-            //        debug.log(classnames[offsetlanguage * numofword + classidslist[idt]]);
+            //        OpenCVForUnity.CoreModule.Rect box = boxesList[idx];
+            //        Debug.Log(" x = " + box.x.ToString() + "\t y = " + box.y.ToString());
+            //        drawPred(vocOffset + classIdsList[idx], confidencesList[idx], box.x, box.y,
+            //        box.x + box.width, box.y + box.height, frame);
             //    }
             //}
-            //Draw the bouding box only if its index is contained in the teaching list
+            //for-loop for the mini game
             for (int i = 0; i < indices.total(); ++i)
             {
                 int idx = (int)indices.get(i, 0)[0];
@@ -553,15 +556,36 @@ namespace OpenCVForUnityExample
                 if (teachList.Contains(classIdsList[idx]))
                 {
                     OpenCVForUnity.CoreModule.Rect box = boxesList[idx];
-                    drawPred(vocOffset + classIdsList[idx], confidencesList[idx], box.x, box.y,
-                    box.x + box.width, box.y + box.height, frame);
+                    Cursor cursor = gameObject.GetComponent<Cursor>(); 
+                    if (isOnCursor(box, cursor))
+                    {
+                        drawPred(vocOffset + classIdsList[idx], confidencesList[idx], box.x, box.y,
+                        box.x + box.width, box.y + box.height, frame);
+                    }
                 }
             }
+
 
             indices.Dispose();
             boxes.Dispose();
             confidences.Dispose();
 
+        }
+
+        private bool isOnCursor(OpenCVForUnity.CoreModule.Rect _box, Cursor _cursor)
+        {
+            float centerX = _box.x + _box.width / 2;
+            float centerY = _box.y + _box.height / 2;
+
+            if (Mathf.Pow(centerX - _cursor.Getx(), 2.0f) + Mathf.Pow(centerY- _cursor.Gety(), 2.0f) < Mathf.Pow((float) _cursor.radius, 2.0f))
+            {
+                Debug.Log("x: "+ centerX.ToString() + "\t y:" + centerY.ToString());
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
