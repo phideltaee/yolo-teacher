@@ -1,0 +1,400 @@
+person
+bicycle
+car
+motorbike
+aeroplane
+bus
+train
+truck
+boat
+traffic light
+fire hydrant
+stop sign
+parking meter
+bench
+bird
+cat
+dog
+horse
+sheep
+cow
+elephant
+bear
+zebra
+giraffe
+backpack
+umbrella
+handbag
+tie
+suitcase
+frisbee
+skis
+snowboard
+sports ball
+kite
+baseball bat
+baseball glove
+skateboard
+surfboard
+tennis racket
+bottle
+wine glass
+cup
+fork
+knife
+spoon
+bowl
+banana
+apple
+sandwich
+orange
+broccoli
+carrot
+hot dog
+pizza
+donut
+cake
+chair
+sofa
+pottedplant
+bed
+diningtable
+toilet
+tvmonitor
+laptop
+mouse
+remote
+keyboard
+cell phone
+microwave
+oven
+toaster
+sink
+refrigerator
+book
+clock
+vase
+scissors
+teddy bear
+hair drier
+toothbrush
+persona
+bicicleta
+coche
+moto
+avión
+autobús
+entrenar
+camión
+barco
+semáforo
+boca de incendio
+señal de stop
+parquímetro
+banco
+pájaro
+gato
+perro
+caballo
+oveja
+vaca
+elefante
+oso
+cebra
+jirafa
+mochila
+paraguas
+bolso
+Corbata
+maleta
+el disco volador
+esquís
+tabla de snowboard
+de deportes de pelota
+cometa
+bate de béisbol
+guante de béisbol
+patineta
+tabla de surf
+raqueta de tenis
+botella
+Copa de vino
+taza
+tenedor
+cuchillo
+cuchara
+cuenco
+plátano
+manzana
+Sandwich
+naranja
+brócoli
+Zanahoria
+Pancho
+Pizza
+rosquilla
+pastel
+silla
+sofá
+planta en maceta
+cama
+comedor
+baño
+tvmonitor
+ordenador portátil
+ratón
+remoto
+teclado
+Teléfono móvil
+microonda
+horno
+tostadora
+lavabo
+refrigerador
+libro
+reloj
+florero
+tijeras
+oso de peluche
+Secadora de pelo
+cepillo de dientes
+la personne
+vélo
+voiture
+moto
+avion
+autobus
+train
+un camion
+bateau
+feu de circulation
+bouche d'incendie
+panneau stop
+parcmètre
+banc
+oiseau
+chat
+chien
+cheval
+mouton
+vache
+l'éléphant
+ours
+zèbre
+girafe
+sac à dos
+parapluie
+Sac à main
+attacher
+valise
+frisbee
+des skis
+snowboard
+balle de sport
+cerf-volant
+batte de baseball
+gant de baseball
+planche à roulette
+planche de surf
+raquette de tennis
+bouteille
+verre de vin
+Coupe
+fourchette
+couteau
+cuillère
+bol
+banane
+Pomme
+sandwich
+Orange
+brocoli
+carotte
+Hot-dog
+Pizza
+Donut
+gâteau
+chaise
+canapé
+plante en pot
+lit
+table à manger
+toilette
+tvmonitor
+ordinateur portable
+Souris
+télécommande
+clavier
+téléphone portable
+four micro onde
+four
+grille-pain
+évier
+réfrigérateur
+livre
+l'horloge
+vase
+les ciseaux
+ours en peluche
+sèche cheveux
+brosse à dents
+Person
+Fahrrad
+Auto
+Motorrad
+Flugzeug
+Bus
+Zug
+Lastwagen
+Boot
+Ampel
+Feuerhydrant
+Stoppschild
+Parkuhr
+Bank
+Vogel
+Katze
+Hund
+Pferd
+Schaf
+Kuh
+Elefant
+Bär
+Zebra
+Giraffe
+Rucksack
+Regenschirm
+Handtasche
+Krawatte
+Koffer
+Frisbeescheibe
+Ski
+Snowboard
+Sportball
+Drachen
+Baseballschläger
+Baseballhandschuh
+Skateboard
+Surfbrett
+Tennisschläger
+Flasche
+Weinglas
+Tasse
+Gabel
+Messer
+Löffel
+Schüssel
+Banane
+Apfel
+Sandwich
+Orange
+Brokkoli
+Karotte
+Hotdog
+Pizza
+Krapfen
+Kuchen
+Stuhl
+Sofa
+Topfpflanze
+Bett
+Esstisch
+Toilette
+tvmonitor
+Laptop
+Maus
+Fernbedienung
+Tastatur
+Handy
+Mikrowelle
+Ofen
+Toaster
+sinken
+Kühlschrank
+Buch
+Uhr
+Vase
+Schere
+Teddybär
+Fön
+Zahnbürste
+persona
+bicicletta
+auto
+motocicletta
+aereo
+autobus
+treno
+camion
+barca
+semaforo
+idrante
+segnale di stop
+parchimetro
+panchina
+uccello
+gatto
+cane
+cavallo
+pecora
+mucca
+elefante
+orso
+zebra
+giraffa
+zaino
+ombrello
+borsetta
+cravatta
+valigia
+frisbee
+sci
+Snowboard
+sport palla
+aquilone
+Mazza da baseball
+guanto da baseball
+skateboard
+tavola da surf
+racchetta da tennis
+bottiglia
+bicchiere di vino
+tazza
+forchetta
+coltello
+cucchiaio
+ciotola
+Banana
+Mela
+Sandwich
+arancia
+broccoli
+carota
+hot dog
+Pizza
+ciambella
+torta
+sedia
+divano
+pianta in vaso
+letto
+tavolo da pranzo
+gabinetto
+tvmonitor
+il computer portatile
+topo
+a distanza
+tastiera
+cellulare
+microonde
+forno
+tostapane
+Lavello
+frigorifero
+libro
+orologio
+vaso
+forbici
+orsacchiotto di peluche
+asciugacapelli
+spazzolino

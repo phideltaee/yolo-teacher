@@ -59,6 +59,11 @@ namespace OpenCVForUnityExample
         public int inpHeight;
 
         /// <summary>
+        /// Cursor display over the webcamtexture as a Gazer
+        /// </summary>
+        public GameObject cursorObject;
+
+        /// <summary>
         /// The texture.
         /// </summary>
         Texture2D texture;
@@ -234,6 +239,7 @@ namespace OpenCVForUnityExample
             webCamTextureToMatHelper.avoidAndroidFrontCameraLowLightIssue = true;
 #endif
             webCamTextureToMatHelper.Initialize();
+            cursorObject.GetComponent<Cursor>().SetisTrigger(true);
         }
 
         /// <summary>
@@ -556,11 +562,11 @@ namespace OpenCVForUnityExample
                 if (teachList.Contains(classIdsList[idx]))
                 {
                     OpenCVForUnity.CoreModule.Rect box = boxesList[idx];
-                    Cursor cursor = gameObject.GetComponent<Cursor>(); 
-                    if (isOnCursor(box, cursor))
+                    if (isOnCursor(box, cursorObject.GetComponent<Cursor>()))
                     {
                         drawPred(vocOffset + classIdsList[idx], confidencesList[idx], box.x, box.y,
                         box.x + box.width, box.y + box.height, frame);
+
                     }
                 }
             }
@@ -572,7 +578,7 @@ namespace OpenCVForUnityExample
 
         }
 
-        private bool isOnCursor(OpenCVForUnity.CoreModule.Rect _box, Cursor _cursor)
+        public bool isOnCursor(OpenCVForUnity.CoreModule.Rect _box, Cursor _cursor)
         {
             float centerX = _box.x + _box.width / 2;
             float centerY = _box.y + _box.height / 2;
@@ -580,10 +586,13 @@ namespace OpenCVForUnityExample
             if (Mathf.Pow(centerX - _cursor.Getx(), 2.0f) + Mathf.Pow(centerY- _cursor.Gety(), 2.0f) < Mathf.Pow((float) _cursor.radius, 2.0f))
             {
                 Debug.Log("x: "+ centerX.ToString() + "\t y:" + centerY.ToString());
+                _cursor.SetisTrigger(false);
                 return true;
+
             }
             else
             {
+                _cursor.SetisTrigger(true);
                 return false;
             }
         }

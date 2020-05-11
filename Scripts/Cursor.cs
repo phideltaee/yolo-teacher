@@ -7,7 +7,7 @@ using OpenCVForUnity.CoreModule;
 
 public class Cursor : MonoBehaviour
 {
-
+    public GameObject quad;
     private float x;
     private float y;
     public int radius;
@@ -16,11 +16,10 @@ public class Cursor : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        WebCamTextureToMatHelper webCamTextureToMatHelper = gameObject.GetComponent<WebCamTextureToMatHelper>();
-        Mat webCamTextureMat = webCamTextureToMatHelper.GetMat();
-        x = webCamTextureMat.width()/2;
-        y = webCamTextureMat.height()/2;
-        isTrigger = false;
+        WebCamTextureToMatHelper webCamTextureToMatHelper = quad.GetComponent<WebCamTextureToMatHelper>();
+        x = webCamTextureToMatHelper.requestedWidth / 2;
+        y = webCamTextureToMatHelper.requestedHeight /2;
+
     }
 
     public float Getx()
@@ -30,6 +29,11 @@ public class Cursor : MonoBehaviour
     public float Gety()
     {
         return y;
+    }
+    public void SetisTrigger(bool _state)
+    {
+        isTrigger = _state;
+        this.gameObject.SetActive(isTrigger);
     }
 
 }
