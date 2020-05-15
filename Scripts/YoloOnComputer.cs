@@ -91,6 +91,18 @@ namespace OpenCVForUnityExample
         List<string> classNames;
         List<string> outBlobNames;
         List<string> outBlobTypes;
+        List<string> detectedGameObjects;
+        List<string> outputGameObjects;
+
+        // MINIGAME VARIABLES //
+        public List<int> minigameList;
+
+        // initialize the datetime object for scanning
+        public DateTime startTime;
+
+        // booleans for minigame
+        public bool minigameActive = false;
+        public bool scanActive = false;
 
         string classes_filepath;
         string config_filepath;
@@ -103,6 +115,8 @@ namespace OpenCVForUnityExample
         //The offset correspond to the language in the list
         int vocOffset;
         List<int> teachList;
+        private List<string> results;
+        private List<string> minigameClasses;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
         IEnumerator getFilePath_Coroutine;
@@ -123,6 +137,9 @@ namespace OpenCVForUnityExample
             if (!string.IsNullOrEmpty(classes)) classes_filepath = Utils.getFilePath("dnn/" + classes);
             if (!string.IsNullOrEmpty(config)) config_filepath = Utils.getFilePath("dnn/" + config);
             if (!string.IsNullOrEmpty(model)) model_filepath = Utils.getFilePath("dnn/" + model);
+            // reset the list of minigames
+            minigameList = new List<int>();
+            startTime = DateTime.UtcNow;
             Run();
 #endif
         }
@@ -311,9 +328,18 @@ namespace OpenCVForUnityExample
             Debug.Log("OnWebCamTextureToMatHelperErrorOccurred " + errorCode);
         }
 
-        // Update is called once per frame
-        void Update()
+        /// <summary>
+        /// Update is called once per frame
+        /// </summary>
+        public void Update()
         {
+            /// while loop replaced with 'checkscan() function' with builtin timer 
+            ///while (DateTime.UtcNow - startTime < TimeSpan.FromSeconds(5))
+            ///{
+            ///    Console.WriteLine("printing again");
+            ///}
+            
+            // Catch new frames
             if (webCamTextureToMatHelper.IsPlaying() && webCamTextureToMatHelper.DidUpdateThisFrame())
             {
 
@@ -331,7 +357,7 @@ namespace OpenCVForUnityExample
 
                     // Create a 4D blob from a frame.
                     Size inpSize = new Size(inpWidth > 0 ? inpWidth : bgrMat.cols(),
-                                       inpHeight > 0 ? inpHeight : bgrMat.rows());
+                                        inpHeight > 0 ? inpHeight : bgrMat.rows());
                     Mat blob = Dnn.blobFromImage(bgrMat, scale, inpSize, mean, swapRB, false);
 
 
@@ -343,10 +369,10 @@ namespace OpenCVForUnityExample
                         Imgproc.resize(bgrMat, bgrMat, inpSize);
                         Mat imInfo = new Mat(1, 3, CvType.CV_32FC1);
                         imInfo.put(0, 0, new float[] {
-                            (float)inpSize.height,
-                            (float)inpSize.width,
-                            1.6f
-                        });
+                        (float)inpSize.height,
+                        (float)inpSize.width,
+                        1.6f
+                    });
                         net.setInput(imInfo, "im_info");
                     }
 
@@ -360,8 +386,28 @@ namespace OpenCVForUnityExample
                     tm.stop();
                     //Debug.Log ("Inference time, ms: " + tm.getTimeMilli ());
 
-                    postprocess(rgbaMat, outs, net);
 
+                    // Check if we are scanning, if so apply post-scan method to update list of gathered words.
+
+                    // --------------- NEW ----------------
+                    // function to determine if to scan or not. 
+                    checkscanning();
+                    if (scanActive & minigameActive)
+                    {
+                        postscan(rgbaMat, outs, net);
+                    }
+                    else
+                    {
+                        if (minigameActive)
+                        {
+                            // do here minigame stuff after scanning is complete
+                        }
+                        else // if neither scanning, nor on minigame, run normal behaviour.  
+                        {
+                            postprocess(rgbaMat, outs, net);
+                        }
+                    }
+                    // --------------------------------------
                     for (int i = 0; i < outs.Count; i++)
                     {
                         outs[i].Dispose();
@@ -371,6 +417,10 @@ namespace OpenCVForUnityExample
 
                 Utils.fastMatToTexture2D(rgbaMat, texture);
             }
+
+                //yield return new WaitForSeconds(2f);
+                //print("coroutine ended");
+          
         }
 
         /// <summary>
@@ -393,6 +443,45 @@ namespace OpenCVForUnityExample
             }
 #endif
         }
+
+
+        /// <summary>
+        /// Starts the minigame if clicked on the game object
+        /// </summary>
+        public void OnStartMinigameClick()
+        {
+            if (!minigameActive)
+            {
+                // set the minigame to active
+                minigameActive = true;
+
+                // reset the scan timer
+                startTime = DateTime.UtcNow;
+            }
+            else
+            {
+                minigameActive = false;
+            }
+        }
+
+
+        /// <summary>
+        /// Called at every loop. Checks time condition for scanning for the first 15 seconds after minigame is started. 
+        /// </summary>
+        private void checkscanning()
+        {
+            if (DateTime.UtcNow - startTime < TimeSpan.FromSeconds(15))
+            {
+                scanActive = true;
+                Debug.Log("scan set to active");
+            }
+            else
+            {
+                scanActive = false;
+                Debug.Log("scan finished");
+            }
+        }
+
 
         /// <summary>
         /// Raises the back button click event.
@@ -537,6 +626,91 @@ namespace OpenCVForUnityExample
             MatOfFloat confidences = new MatOfFloat();
             confidences.fromList(confidencesList);
 
+            MatOfInt indices = new MatOfInt();
+            Dnn.NMSBoxes(boxes, confidences, confThreshold, nmsThreshold, indices);
+
+            //Draw the bouding box only if its index is contained in the teaching list
+            //for (int i = 0; i < indices.total(); ++i)
+            //{
+            //    int idx = (int)indices.get(i, 0)[0];
+
+            //    if (teachList.Contains(classIdsList[idx]))
+            //    {
+            //        OpenCVForUnity.CoreModule.Rect box = boxesList[idx];
+            //        Debug.Log(" x = " + box.x.ToString() + "\t y = " + box.y.ToString());
+            //        drawPred(vocOffset + classIdsList[idx], confidencesList[idx], box.x, box.y,
+            //        box.x + box.width, box.y + box.height, frame);
+            //    }
+            //}
+
+            indices.Dispose();
+            boxes.Dispose();
+            confidences.Dispose();
+
+        }
+
+        private void postscan(Mat frame, List<Mat> outs, Net net)
+        {
+            string outLayerType = outBlobTypes[0];
+
+
+            List<int> classIdsList = new List<int>();
+            List<float> confidencesList = new List<float>();
+            List<OpenCVForUnity.CoreModule.Rect> boxesList = new List<OpenCVForUnity.CoreModule.Rect>();
+
+            if (outLayerType == "Region")
+            {
+                for (int i = 0; i < outs.Count; ++i)
+                {
+                    // Network produces output blob with a shape NxC where N is a number of
+                    // detected objects and C is a number of classes + 4 where the first 4
+                    // numbers are [center_x, center_y, width, height]
+
+                    //Debug.Log("outs[i].ToString() " + outs[i].ToString());
+
+                    float[] positionData = new float[5];
+                    float[] confidenceData = new float[outs[i].cols() - 5];
+
+                    for (int p = 0; p < outs[i].rows(); p++)
+                    {
+
+                        outs[i].get(p, 0, positionData);
+
+                        outs[i].get(p, 5, confidenceData);
+
+                        int maxIdx = confidenceData.Select((val, idx) => new { V = val, I = idx }).Aggregate((max, working) => (max.V > working.V) ? max : working).I;
+                        float confidence = confidenceData[maxIdx];
+
+                        if (confidence > confThreshold)
+                        {
+
+                            int centerX = (int)(positionData[0] * frame.cols());
+                            int centerY = (int)(positionData[1] * frame.rows());
+                            int width = (int)(positionData[2] * frame.cols());
+                            int height = (int)(positionData[3] * frame.rows());
+                            int left = centerX - width / 2;
+                            int top = centerY - height / 2;
+
+                            classIdsList.Add(maxIdx);
+                            confidencesList.Add((float)confidence);
+                            boxesList.Add(new OpenCVForUnity.CoreModule.Rect(left, top, width, height));
+
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Debug.Log("Unknown output layer type: " + outLayerType);
+            }
+
+
+            MatOfRect boxes = new MatOfRect();
+            boxes.fromList(boxesList);
+
+            MatOfFloat confidences = new MatOfFloat();
+            confidences.fromList(confidencesList);
+
 
             MatOfInt indices = new MatOfInt();
             Dnn.NMSBoxes(boxes, confidences, confThreshold, nmsThreshold, indices);
@@ -554,38 +728,33 @@ namespace OpenCVForUnityExample
             //        box.x + box.width, box.y + box.height, frame);
             //    }
             //}
-            //for-loop for the mini game
+
+            //for-loop for the mini game - if a new class appears, add it to the 
             for (int i = 0; i < indices.total(); ++i)
             {
                 int idx = (int)indices.get(i, 0)[0];
 
-                if (teachList.Contains(classIdsList[idx]))
+                if (!minigameList.Contains(classIdsList[idx]))
                 {
-                    OpenCVForUnity.CoreModule.Rect box = boxesList[idx];
-                    if (isOnCursor(box, cursorObject.GetComponent<Cursor>()))
-                    {
-                        drawPred(vocOffset + classIdsList[idx], confidencesList[idx], box.x, box.y,
-                        box.x + box.width, box.y + box.height, frame);
-
-                    }
+                    Debug.Log("new class id list added "+ classIdsList[idx].ToString());
+                    minigameList.Add(classIdsList[idx]);
                 }
+            
             }
-
-
             indices.Dispose();
             boxes.Dispose();
             confidences.Dispose();
-
         }
+
 
         public bool isOnCursor(OpenCVForUnity.CoreModule.Rect _box, Cursor _cursor)
         {
             float centerX = _box.x + _box.width / 2;
             float centerY = _box.y + _box.height / 2;
 
-            if (Mathf.Pow(centerX - _cursor.Getx(), 2.0f) + Mathf.Pow(centerY- _cursor.Gety(), 2.0f) < Mathf.Pow((float) _cursor.radius, 2.0f))
+            if (Mathf.Pow(centerX - _cursor.Getx(), 2.0f) + Mathf.Pow(centerY - _cursor.Gety(), 2.0f) < Mathf.Pow((float)_cursor.radius, 2.0f))
             {
-                Debug.Log("x: "+ centerX.ToString() + "\t y:" + centerY.ToString());
+                Debug.Log("x: " + centerX.ToString() + "\t y:" + centerY.ToString());
                 _cursor.SetisTrigger(false);
                 return true;
 
@@ -669,6 +838,7 @@ namespace OpenCVForUnityExample
             return types;
         }
     }
+    
 }
 #endif
 
