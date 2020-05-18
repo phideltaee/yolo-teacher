@@ -326,6 +326,7 @@ MonoBehaviour:
   swapRB: 0
   inpWidth: 416
   inpHeight: 416
+  cursorObject: {fileID: 0}
 --- !u!1 &58210317
 GameObject:
   m_ObjectHideFlags: 0
@@ -1937,7 +1938,7 @@ Camera:
   m_GameObject: {fileID: 791715645}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0.019607844}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}

@@ -158,7 +158,7 @@ tijeras
 oso de peluche
 Secadora de pelo
 cepillo de dientes
-la personne
+personne
 vélo
 voiture
 moto
@@ -178,7 +178,7 @@ chien
 cheval
 mouton
 vache
-l'éléphant
+éléphant
 ours
 zèbre
 girafe
@@ -188,7 +188,7 @@ Sac à main
 attacher
 valise
 frisbee
-des skis
+skis
 snowboard
 balle de sport
 cerf-volant
@@ -381,7 +381,7 @@ letto
 tavolo da pranzo
 gabinetto
 tvmonitor
-il computer portatile
+computer portatile
 topo
 a distanza
 tastiera

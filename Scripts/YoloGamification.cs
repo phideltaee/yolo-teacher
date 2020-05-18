@@ -75,6 +75,7 @@ namespace OpenCVForUnityExample
         public bool minigameActive = false;
         public bool scanActive = false;
         public bool wordFound = false;
+        int wordFoundCounter = 0;
 
         /// <summary>
         /// The texture.
@@ -100,10 +101,32 @@ namespace OpenCVForUnityExample
         /// The FPS monitor.
         /// </summary>
         FpsMonitor fpsMonitor;
+
+        /// <summary>
+        /// The FPS monitor.
+        /// </summary>
+        public Text wordDisplay;
+        public Text EnglishText;
+        public Text FrenchText;
+        public Text GermanText;
+        public Text SpanishText;
+        public Text ItalianText;
+
+        /// <summary>
+        /// The Apps Button.
+        /// </summary>
+        public Button scanButton;
+        public Button processButton;
+
+        /// <summary>
+        /// The Clock
+        /// </summary>
+        public Text clock;
         public float scanPeriod;
         public float processPeriod;
         float scanTime;
         float processTime;
+
 
         List<string> classNames;
         List<string> outBlobNames;
@@ -120,6 +143,7 @@ namespace OpenCVForUnityExample
         //The offset correspond to the language in the list
         int vocOffset;
         List<int> vocIDList;
+        IEnumerator FoundObject;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
         IEnumerator getFilePath_Coroutine;
@@ -143,7 +167,7 @@ namespace OpenCVForUnityExample
             if (!string.IsNullOrEmpty(config)) config_filepath = Utils.getFilePath("dnn/" + config);
             if (!string.IsNullOrEmpty(model)) model_filepath = Utils.getFilePath("dnn/" + model);
             Run();
-            vocLearn.text = "English:" + "\t" + "Deutsch:" + "\t" + "Francais" + "\t" + "Italiano" + "\n";
+          
 #endif      
         }
 
@@ -254,12 +278,12 @@ namespace OpenCVForUnityExample
             gameObject.transform.localScale = new Vector3(webCamTextureMat.cols(), webCamTextureMat.rows(), 1);
             Debug.Log("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
 
-            if (fpsMonitor != null)
-            {
-                fpsMonitor.Add("width", webCamTextureMat.width().ToString());
-                fpsMonitor.Add("height", webCamTextureMat.height().ToString());
-                fpsMonitor.Add("orientation", Screen.orientation.ToString());
-            }
+            //if (fpsMonitor != null)
+            //{
+            //    fpsMonitor.Add("width", webCamTextureMat.width().ToString());
+            //    fpsMonitor.Add("height", webCamTextureMat.height().ToString());
+            //    fpsMonitor.Add("orientation", Screen.orientation.ToString());
+            //}
 
 
             float width = webCamTextureMat.width();
@@ -313,7 +337,8 @@ namespace OpenCVForUnityExample
             {
                 Mat rgbaMat = webCamTextureToMatHelper.GetMat();
                 if (minigameActive)
-                { 
+                {
+                    clock.text = "Time: " + scanTime.ToString("0");
                     scanTime -= Time.deltaTime;
                     if (scanTime >= 0f)
                     {
@@ -322,45 +347,57 @@ namespace OpenCVForUnityExample
                     }
                     else if (minigameList.Count() >= 3)
                     {
-                        scanActive = true;
                         minigameActive = false;
                         scanTime = scanPeriod;
-                        Debug.Log("Scan Phase Completed");
+                        clock.text = "Scanning Completed";
+                        processButton.gameObject.SetActive(true);
                     }
                     else
                     {
                         minigameActive = false;
                         scanTime = scanPeriod;
-                        Debug.Log("Scan has not worked");
+                        clock.text = "Scanning Failed";
+                        scanButton.gameObject.SetActive(true);
+                        wordDisplay.text = "";
                     }
                 }
 
+
                 if (scanActive)
                 {
+                    
+                    clock.text = "Time: " + processTime.ToString("0");
                     processTime -= Time.deltaTime;
                     if (processTime >= 0f)
                     {
-                        vocLearn.text = "You should look for a:" + classNames[minigameList[0]]+ "\n";
+                        wordDisplay.text = classNames[minigameList[0 + wordFoundCounter]];
                         yoloProcess(rgbaMat);
                         if (wordFound)
                         {
-                            minigameList.RemoveAt(0);
+                            wordFoundCounter++;
                             processTime = processPeriod;
                             wordFound = false;
                             Debug.Log("1 Word found");
                         }
+                        if (processTime <= 10f)
+                        {
+                            clock.color = Color.red;
+                            clock.text = "Time: " + processTime.ToString("0.0");
+                        }
                     }
-                    else if (minigameList.Any())
+                    else if (minigameList.Count() > wordFoundCounter )
                     {
                         scanActive = false;
                         processTime = processPeriod;
-                        Debug.Log("You loose");
+                        wordFoundCounter = 0;
+                        clock.text = "GAME OVER";
                     }
                     else
                     {
                         scanActive = false;
                         processTime = processPeriod;
-                        Debug.Log("You win");
+                        wordFoundCounter = 0;
+                        clock.text = "WIN";
 
                     }
                 }
@@ -554,6 +591,21 @@ namespace OpenCVForUnityExample
         }
 
         /// <summary>
+        /// Starts the minigame if clicked on the game object
+        /// </summary>
+        public void OnStartProcessClick()
+        {
+            // set the minigame to active
+            if (!scanActive)
+            {
+                scanActive = true;
+            }
+            else
+            {
+                scanActive = false;
+            }
+        }
+        /// <summary>
         /// Reads the class names.
         /// </summary>
         /// <returns>The class names.</returns>
@@ -666,6 +718,14 @@ namespace OpenCVForUnityExample
                 {
                     Debug.Log("new class id list added " + classIdsList[idx].ToString());
                     minigameList.Add(classIdsList[idx]);
+                    if (minigameList.Count() > 1)
+                    {
+                        wordDisplay.text = minigameList.Count().ToString() + " words";
+                    }
+                    else
+                    {
+                        wordDisplay.text = minigameList.Count().ToString() + " word";
+                    }
                 }
 
             }
@@ -773,13 +833,18 @@ namespace OpenCVForUnityExample
                 OpenCVForUnity.CoreModule.Rect box = boxesList[idx];
                 if (isOnCursor(box, cursorObject.GetComponent<Cursor>()))
                 {
-                    if (minigameList[0] == classIdsList[idx])
+                    if (minigameList[0+wordFoundCounter] == classIdsList[idx])
                     {
                         drawPred(vocOffset + classIdsList[idx], confidencesList[idx], box.x, box.y,
                         box.x + box.width, box.y + box.height, frame);
                         //Update the text summarizing the object encountered
                         vocIDList.Add(classIdsList[idx]);
-                        vocLearn.text += classNames[classIdsList[idx]] + "\t" + classNames[240 + classIdsList[idx]] + "\t" + classNames[160 + classIdsList[idx]] + "\t" + classNames[320 + classIdsList[idx]] + "\n";
+                        //vocLearn.text += classNames[classIdsList[idx]] + "\t" + classNames[240 + classIdsList[idx]] + "\t" + classNames[160 + classIdsList[idx]] + "\t" + classNames[320 + classIdsList[idx]] + "\n";
+                        EnglishText.text += "\n" + classNames[classIdsList[idx]];
+                        SpanishText.text += "\n" + classNames[80+classIdsList[idx]];
+                        FrenchText.text += "\n" + classNames[160+classIdsList[idx]];
+                        GermanText.text += "\n" + classNames[240+classIdsList[idx]];
+                        ItalianText.text += "\n" + classNames[320+classIdsList[idx]];
                         wordFound = true;
                         Debug.Log("You found the" + classNames[classIdsList[idx]]);
                     }
@@ -789,6 +854,11 @@ namespace OpenCVForUnityExample
             boxes.Dispose();
             confidences.Dispose();
 
+        }
+
+        IEnumerator ObjectFound()
+        {
+            yield return new WaitForSeconds(2.5f);
         }
 
         public bool isOnCursor(OpenCVForUnity.CoreModule.Rect _box, Cursor _cursor)
@@ -828,17 +898,18 @@ namespace OpenCVForUnityExample
             {
                 if (classId < (int)classNames.Count)
                 {
-                    label = classNames[classId] + ": " + label;
+                    label = classNames[classId];
                 }
             }
 
             int[] baseLine = new int[1];
-            Size labelSize = Imgproc.getTextSize(label, Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, 1, baseLine);
+            Size labelSize = Imgproc.getTextSize(label, Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, 1, baseLine);
 
             top = Mathf.Max(top, (int)labelSize.height);
             Imgproc.rectangle(frame, new Point(left, top - labelSize.height),
                 new Point(left + labelSize.width, top + baseLine[0]), Scalar.all(255), Core.FILLED);
-            Imgproc.putText(frame, label, new Point(left, top), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(0, 0, 0, 255));
+            Imgproc.putText(frame, label, new Point(left, top), Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(0, 0, 0, 255));
+            StartCoroutine("ObjectFound");
         }
 
         /// <summary>

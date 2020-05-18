@@ -22,7 +22,7 @@ namespace OpenCVForUnityExample
     /// Referring to https://github.com/opencv/opencv/blob/master/samples/dnn/object_detection.cpp.
     /// </summary>
     [RequireComponent(typeof(WebCamTextureToMatHelper))]
-    public class YoloExploration : MonoBehaviour
+    public class YoloOnComputer : MonoBehaviour
     {
 
         [TooltipAttribute("Path to a binary file of model contains trained weights. It could be a file with extensions .caffemodel (Caffe), .pb (TensorFlow), .t7 or .net (Torch), .weights (Darknet).")]
@@ -64,11 +64,6 @@ namespace OpenCVForUnityExample
         public GameObject cursorObject;
 
         /// <summary>
-        /// UI text to display the list of vocabulary
-        /// </summary>
-        public Text vocLearn;
-
-        /// <summary>
         /// The texture.
         /// </summary>
         Texture2D texture;
@@ -107,7 +102,7 @@ namespace OpenCVForUnityExample
         MenuVariables menuVariables;
         //The offset correspond to the language in the list
         int vocOffset;
-        List<int> vocIDList;
+        List<int> teachList;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
         IEnumerator getFilePath_Coroutine;
@@ -129,7 +124,6 @@ namespace OpenCVForUnityExample
             if (!string.IsNullOrEmpty(config)) config_filepath = Utils.getFilePath("dnn/" + config);
             if (!string.IsNullOrEmpty(model)) model_filepath = Utils.getFilePath("dnn/" + model);
             Run();
-            vocLearn.text = "English:" + "\t" + "Deutsch:" + "\t" + "Francais" + "\t" + "Italiano" + "\n";
 #endif      
         }
 
@@ -211,6 +205,32 @@ namespace OpenCVForUnityExample
                 //    Debug.Log("types [" + i + "] " + outBlobTypes[i]);
                 //}
 
+                // initialize teaching list
+                teachList = new List<int>();
+                teachList = menuVariables.GetvocIdList();
+                switch (menuVariables.GetLanguage())
+                {
+                    case "EN":
+                        vocOffset = 0;
+                        break;
+                    case "ES":
+                        vocOffset = 80;
+                        break;
+                    case "FR":
+                        vocOffset = 160;
+                        break;
+                    case "DE":
+                        vocOffset = 240;
+                        break;
+                    case "IT":
+                        vocOffset = 320;
+                        break;
+                    default:
+                        print("English was set by default");
+                        vocOffset = 0;
+                        break;
+                }
+                Debug.Log(menuVariables.GetLanguage() + vocOffset.ToString());
             }
 
 
@@ -220,7 +240,6 @@ namespace OpenCVForUnityExample
 #endif
             webCamTextureToMatHelper.Initialize();
             cursorObject.GetComponent<Cursor>().SetisTrigger(true);
-            vocIDList = new List<int>();
         }
 
         /// <summary>
@@ -416,7 +435,7 @@ namespace OpenCVForUnityExample
             webCamTextureToMatHelper.requestedIsFrontFacing = !webCamTextureToMatHelper.IsFrontFacing();
         }
 
-        /// <summary>
+         /// <summary>
         /// Reads the class names.
         /// </summary>
         /// <returns>The class names.</returns>
@@ -464,7 +483,7 @@ namespace OpenCVForUnityExample
             List<int> classIdsList = new List<int>();
             List<float> confidencesList = new List<float>();
             List<OpenCVForUnity.CoreModule.Rect> boxesList = new List<OpenCVForUnity.CoreModule.Rect>();
-
+       
             if (outLayerType == "Region")
             {
                 for (int i = 0; i < outs.Count; ++i)
@@ -521,48 +540,35 @@ namespace OpenCVForUnityExample
 
             MatOfInt indices = new MatOfInt();
             Dnn.NMSBoxes(boxes, confidences, confThreshold, nmsThreshold, indices);
-            //Check the Language selected
-            switch (menuVariables.GetLanguage())
-            {
-                case "EN":
-                    vocOffset = 0;
-                    break;
-                case "ES":
-                    vocOffset = 80;
-                    break;
-                case "FR":
-                    vocOffset = 160;
-                    break;
-                case "DE":
-                    vocOffset = 240;
-                    break;
-                case "IT":
-                    vocOffset = 320;
-                    break;
-                default:
-                    vocOffset = 0;
-                    break;
-            }
-            print(vocOffset.ToString());
-            //Draw the bouding box only if its in the center of the image (On Cursor)
+
+            //Draw the bouding box only if its index is contained in the teaching list
+            //for (int i = 0; i < indices.total(); ++i)
+            //{
+            //    int idx = (int)indices.get(i, 0)[0];
+
+            //    if (teachList.Contains(classIdsList[idx]))
+            //    {
+            //        OpenCVForUnity.CoreModule.Rect box = boxesList[idx];
+            //        Debug.Log(" x = " + box.x.ToString() + "\t y = " + box.y.ToString());
+            //        drawPred(vocOffset + classIdsList[idx], confidencesList[idx], box.x, box.y,
+            //        box.x + box.width, box.y + box.height, frame);
+            //    }
+            //}
+            //for-loop for the mini game
             for (int i = 0; i < indices.total(); ++i)
             {
-                int idx = (int)indices.get(i, 0)[0];      
-                OpenCVForUnity.CoreModule.Rect box = boxesList[idx];
-                if (isOnCursor(box, cursorObject.GetComponent<Cursor>()))
-                {
-                    drawPred(vocOffset + classIdsList[idx], confidencesList[idx], box.x, box.y,
-                    box.x + box.width, box.y + box.height, frame);
-                    //Update the text summarizing the object encountered
-                    if (!vocIDList.Contains(classIdsList[idx]))
-                    {
-                        //Update the vocabulary learned
-                        vocIDList.Add(classIdsList[idx]);
-                        vocLearn.text += classNames[classIdsList[idx]] + "\t" + classNames[240 + classIdsList[idx]] + "\t" + classNames[160 + classIdsList[idx]] + "\t" + classNames[320 + classIdsList[idx]] + "\n";
-                    }
+                int idx = (int)indices.get(i, 0)[0];
 
+                if (teachList.Contains(classIdsList[idx]))
+                {
+                    OpenCVForUnity.CoreModule.Rect box = boxesList[idx];
+                    if (isOnCursor(box, cursorObject.GetComponent<Cursor>()))
+                    {
+                        drawPred(vocOffset + classIdsList[idx], confidencesList[idx], box.x, box.y,
+                        box.x + box.width, box.y + box.height, frame);
+
+                    }
                 }
-                
             }
 
 
@@ -577,11 +583,10 @@ namespace OpenCVForUnityExample
             float centerX = _box.x + _box.width / 2;
             float centerY = _box.y + _box.height / 2;
 
-            if (Mathf.Pow(centerX - _cursor.Getx(), 2.0f) + Mathf.Pow(centerY - _cursor.Gety(), 2.0f) < Mathf.Pow((float)_cursor.radius, 2.0f))
+            if (Mathf.Pow(centerX - _cursor.Getx(), 2.0f) + Mathf.Pow(centerY- _cursor.Gety(), 2.0f) < Mathf.Pow((float) _cursor.radius, 2.0f))
             {
-                Debug.Log("x: " + centerX.ToString() + "\t y:" + centerY.ToString());
+                Debug.Log("x: "+ centerX.ToString() + "\t y:" + centerY.ToString());
                 _cursor.SetisTrigger(false);
-
                 return true;
 
             }
@@ -611,17 +616,17 @@ namespace OpenCVForUnityExample
             {
                 if (classId < (int)classNames.Count)
                 {
-                    label = classNames[classId];
+                    label = classNames[classId] + ": " + label;
                 }
             }
 
             int[] baseLine = new int[1];
-            Size labelSize = Imgproc.getTextSize(label, Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, 1, baseLine);
+            Size labelSize = Imgproc.getTextSize(label, Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, 1, baseLine);
 
             top = Mathf.Max(top, (int)labelSize.height);
             Imgproc.rectangle(frame, new Point(left, top - labelSize.height),
                 new Point(left + labelSize.width, top + baseLine[0]), Scalar.all(255), Core.FILLED);
-            Imgproc.putText(frame, label, new Point(left, top), Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(0, 0, 0, 255));
+            Imgproc.putText(frame, label, new Point(left, top), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(0, 0, 0, 255));
         }
 
         /// <summary>
