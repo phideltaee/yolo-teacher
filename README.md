@@ -10,17 +10,17 @@ Open the terminal and write `git clone github.com/phideltaee/yolo-teacher.git`
 ## Windows 
 
 ## Set-Installation
-1. Create a New unity Project 
+### 1. Create a New unity Project 
 
-2. Download OpenCV for Unity
+### 2. Download OpenCV for Unity
 
-3. Import the package in your unity project
+### 3. Import the package in your unity project
 
-4. Follow the set-up instruction from th .PDF
+### 4. Follow the set-up instruction from th .PDF
 
-5. Download the pacakge from this github AR_language_teacher
+### 5. Download the pacakge from this github AR_language_teacher
 
-6. Import the Package to your projct
+### 6. Import the Package to your projct
 
 
 ## User-guide
