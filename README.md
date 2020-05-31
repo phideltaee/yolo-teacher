@@ -39,6 +39,18 @@ Finally, the table on the left side of your screen serves as a summary, and stor
 
 
 3. Word hunting mode
+This mode is divided in to phases.
+Fisrt of all, once the user is ready, he can press the button start scanning in the middle of the screen to start the first phase of the process. 
+
+During 10 seconds the user will have to move its camera to detect at least three objects from his direct environmnet and complete the scanning phase. Once the 10 second are passe, if the scanning procedure is completed the user can start to hunt for the words detected by clicking the button start hunting. However, if the number of objects detected is insufficient, the user is asked to restart the scanning phase. 
+
+When the hunt begin, the word to find is written in the box on the top left of the screen. In the same time, the timer is reset to 60 seconds which correspond to the time the user is given to find the object in the surrounding environment. when, the word is correctly detected, then it goes to the next words identify in the scene during the scanning phase. To win the game, the user has to correctly point at each word list build d 
+To win the game, the user must find all the words scanned during the first phase within the allocated time.
+
+Now you should have the basics you need to navigate freely in our applications. 
+So, we wish you good luck and hope that will enrich your vocabulary while having fun   
+
+
 
 
 # References on github
