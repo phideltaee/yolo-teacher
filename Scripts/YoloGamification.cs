@@ -103,7 +103,7 @@ namespace OpenCVForUnityExample
         FpsMonitor fpsMonitor;
 
         /// <summary>
-        /// The FPS monitor.
+        /// The Text Displaying infoon the voc.
         /// </summary>
         public Text wordDisplay;
         public Text EnglishText;
@@ -370,7 +370,7 @@ namespace OpenCVForUnityExample
                     processTime -= Time.deltaTime;
                     if (processTime >= 0f)
                     {
-                        wordDisplay.text = classNames[minigameList[0 + wordFoundCounter]];
+                        wordDisplay.text = classNames[vocOffset + minigameList[wordFoundCounter]];
                         yoloProcess(rgbaMat);
                         if (wordFound)
                         {
@@ -833,7 +833,7 @@ namespace OpenCVForUnityExample
                 OpenCVForUnity.CoreModule.Rect box = boxesList[idx];
                 if (isOnCursor(box, cursorObject.GetComponent<Cursor>()))
                 {
-                    if (minigameList[0+wordFoundCounter] == classIdsList[idx])
+                    if (minigameList[wordFoundCounter] == classIdsList[idx])
                     {
                         drawPred(vocOffset + classIdsList[idx], confidencesList[idx], box.x, box.y,
                         box.x + box.width, box.y + box.height, frame);

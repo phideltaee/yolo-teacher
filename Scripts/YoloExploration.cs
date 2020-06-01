@@ -64,11 +64,6 @@ namespace OpenCVForUnityExample
         public GameObject cursorObject;
 
         /// <summary>
-        /// UI text to display the list of vocabulary
-        /// </summary>
-        public Text vocLearn;
-
-        /// <summary>
         /// The texture.
         /// </summary>
         Texture2D texture;
@@ -89,9 +84,14 @@ namespace OpenCVForUnityExample
         Net net;
 
         /// <summary>
-        /// The FPS monitor.
+        /// The Text Displaying infoon the voc.
         /// </summary>
-        FpsMonitor fpsMonitor;
+        public Text wordDisplay;
+        public Text EnglishText;
+        public Text FrenchText;
+        public Text GermanText;
+        public Text SpanishText;
+        public Text ItalianText;
 
         List<string> classNames;
         List<string> outBlobNames;
@@ -116,7 +116,6 @@ namespace OpenCVForUnityExample
         // Use this for initialization
         void Start()
         {
-            fpsMonitor = GetComponent<FpsMonitor>();
             menuVariables = GameObject.Find("EventSystem").GetComponent<MenuVariables>();
 
             webCamTextureToMatHelper = gameObject.GetComponent<WebCamTextureToMatHelper>();
@@ -129,7 +128,11 @@ namespace OpenCVForUnityExample
             if (!string.IsNullOrEmpty(config)) config_filepath = Utils.getFilePath("dnn/" + config);
             if (!string.IsNullOrEmpty(model)) model_filepath = Utils.getFilePath("dnn/" + model);
             Run();
-            vocLearn.text = "English:" + "\t" + "Deutsch:" + "\t" + "Francais" + "\t" + "Italiano" + "\n";
+            EnglishText.text = "EN";
+            SpanishText.text = "ES";
+            FrenchText.text =  "FR";
+            GermanText.text = "DE";
+            ItalianText.text = "IT";
 #endif      
         }
 
@@ -239,14 +242,6 @@ namespace OpenCVForUnityExample
 
             gameObject.transform.localScale = new Vector3(webCamTextureMat.cols(), webCamTextureMat.rows(), 1);
             Debug.Log("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
-
-            if (fpsMonitor != null)
-            {
-                fpsMonitor.Add("width", webCamTextureMat.width().ToString());
-                fpsMonitor.Add("height", webCamTextureMat.height().ToString());
-                fpsMonitor.Add("orientation", Screen.orientation.ToString());
-            }
-
 
             float width = webCamTextureMat.width();
             float height = webCamTextureMat.height();
@@ -553,12 +548,17 @@ namespace OpenCVForUnityExample
                 {
                     drawPred(vocOffset + classIdsList[idx], confidencesList[idx], box.x, box.y,
                     box.x + box.width, box.y + box.height, frame);
+                    wordDisplay.text = classNames[classIdsList[idx]];
                     //Update the text summarizing the object encountered
                     if (!vocIDList.Contains(classIdsList[idx]))
                     {
                         //Update the vocabulary learned
                         vocIDList.Add(classIdsList[idx]);
-                        vocLearn.text += classNames[classIdsList[idx]] + "\t" + classNames[240 + classIdsList[idx]] + "\t" + classNames[160 + classIdsList[idx]] + "\t" + classNames[320 + classIdsList[idx]] + "\n";
+                        EnglishText.text += "\n" + classNames[classIdsList[idx]]+ "\n";
+                        SpanishText.text += "\n" + classNames[80 + classIdsList[idx]] + "\n";
+                        FrenchText.text += "\n" + classNames[160 + classIdsList[idx]] + "\n";
+                        GermanText.text += "\n" + classNames[240 + classIdsList[idx]] + "\n";
+                        ItalianText.text += "\n" + classNames[320 + classIdsList[idx]] + "\n";
                     }
 
                 }
