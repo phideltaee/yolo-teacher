@@ -5,22 +5,26 @@ Main repository for the AR Language Teacher for the 3D vision class, spring 2020
 # Working on this repo:
 
 ## Mac
-Open the terminal and write `git clone github.com/phideltaee/yolo-teacher.git`
+- Navigate to your desired downloads directory. 
+- Open the terminal and write `git clone github.com/phideltaee/yolo-teacher.git`
 
 ## Windows 
+Clone this repository into a new folder. 
 
-## Set-Installation
-### 1. Create a New unity Project 
+## Installation Guide
+#### 1. Create a New unity Project 
+Unity Version used for this solution: 2018.4.18f1
 
-### 2. Download OpenCV for Unity
+#### 2. Download OpenCV for Unity
 
-### 3. Import the package in your unity project
+#### 3. Import the package in your unity project
+        Navigate to: Unity -> Assets -> Import Package -> Custom Package -> [Now browse to the directory where the OpenCV_for_Unity package was downloaded.]
 
-### 4. Follow the set-up instruction from th .PDF
+#### 4. Follow the set-up instruction from the PDF
 
-### 5. Download the pacakge from this github AR_language_teacher
+#### 5. Download the pacakge from this github [AR_language_teacher](https://github.com/phideltaee/yolo-teacher)
 
-### 6. Import the Package to your projct
+#### 6. Import the Package to your project
 
 
 ## User-guide
