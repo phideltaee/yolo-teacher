@@ -1,8 +1,6 @@
-# yolo-teacher
-Main repository for the AR Language Teacher for the 3D vision class, spring 2020.
+# AR Language Teacher 
+See the [video](https://vimeo.com/424753324) of the working solution. 
 
-# Video of Working Solution
-[insert link here]
 
 # Working on this repo:
 
