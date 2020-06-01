@@ -1,6 +1,8 @@
 # yolo-teacher
 Main repository for the AR Language Teacher for the 3D vision class, spring 2020.
 
+# Video of Working Solution
+[insert link here]
 
 # Working on this repo:
 
@@ -55,6 +57,10 @@ Now you should have the basics you need to navigate freely in our applications.
 So, we wish you good luck and hope that will enrich your vocabulary while having fun   
 
 
+
+# Troubleshooting
+### GUI is not Properly Sized
+[insert picture of this problem]
 
 
 # References on github
