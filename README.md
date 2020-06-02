@@ -1,5 +1,9 @@
 # AR Language Teacher 
-See the [video](https://vimeo.com/424753324) of the working solution. 
+
+![AR Teacher Solution](/ar_teacher.gif)
+
+
+See the full [video](https://vimeo.com/424753324) of the working solution. 
 
 
 # Working on this repo:
