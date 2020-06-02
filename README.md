@@ -41,8 +41,8 @@ The main menu is composed of two Buttons that enable the user to choose which mi
 
 ### 2. Exploration mode 
 Once the exploration mode start, the view of the camera from your mobile device is displayed on your screen. 
-In the middle of the scree, a whithe cursor should appear. It will help you to point at the object from your environment that you want to know the translation. 
-Then, on the right side of the screen, there area lists of 5 buttons to set the language of your choices and on top of this buttons list is a panel always showing you the translation in english of the last object in the room succesfuly identify.  
+In the middle of the screen, a whithe cursor should appear. It will help you to point at the object from your environment that you want to know the translation. 
+Then, on the right side of the screen, there area lists of 5 buttons to set the language of your choice and on top of this buttons list is a panel always showing you the translation in english of the last object in the room succesfuly identify.  
 Finally, the table on the left side of your screen serves as a summary, and store all the words you have learned so far, with its translation in the five available languages.  
 
 
@@ -50,9 +50,10 @@ Finally, the table on the left side of your screen serves as a summary, and stor
 This mode is divided in to phases.
 Fisrt of all, once the user is ready, he can press the button start scanning in the middle of the screen to start the first phase of the process. 
 
-During 10 seconds the user will have to move its camera to detect at least three objects from his direct environmnet and complete the scanning phase. Once the 10 second are passe, if the scanning procedure is completed the user can start to hunt for the words detected by clicking the button start hunting. However, if the number of objects detected is insufficient, the user is asked to restart the scanning phase. 
+During 10 seconds the user will have to move its camera to detect at least three objects from his direct environment and complete the scanning phase. Once the 10 second are passed, if the scanning procedure is completed the user can start to hunt for the words detected by clicking the button start hunting. However, if the number of objects detected is insufficient, the user is asked to restart the scanning phase. 
 
-When the hunt begin, the word to find is written in the box on the top left of the screen. In the same time, the timer is reset to 60 seconds which correspond to the time the user is given to find the object in the surrounding environment. when, the word is correctly detected, then it goes to the next words identify in the scene during the scanning phase. To win the game, the user has to correctly point at each word list build d 
+When the hunt begin, the word to find is written in the box on the top left of the screen. In the same time, the timer is reset to 60 seconds which correspond to the time the user is given to find the object in the surrounding environment. when, the word is correctly detected, then it goes to the next words identify in the scene during the scanning phase. 
+
 To win the game, the user must find all the words scanned during the first phase within the allocated time.
 
 Now you should have the basics you need to navigate freely in our applications. 
