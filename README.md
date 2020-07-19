@@ -63,7 +63,7 @@ So, we wish you good luck and hope that will enrich your vocabulary while having
 
 # Troubleshooting
 ### GUI is not Properly Sized
-[insert picture of this problem]
+![Layout_issue](/Trouble_layout.png)
 
 
 # References on github
