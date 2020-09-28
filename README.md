@@ -1,5 +1,9 @@
 # AR Language Teacher 
 
+**`ETH 3D Vision - Project`** AR Language Teacher
+
+**`Team Members`:** Fidel Esquivel Estay, Cyprien Raymi Fol, Yihang She
+
 ![AR Teacher Solution](/ar_teacher.gif)
 
 
